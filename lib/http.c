@@ -1170,8 +1170,11 @@ CURLcode Curl_add_buffer_send(Curl_send_buffer *in,
        we will be using if this send is retried later.
     */
     result = Curl_get_upload_buffer(data);
-    if(result)
+    if(result) {
+      /* malloc failed, free memory and return to the caller */
+      Curl_add_buffer_free(in);
       return result;
+    }
     memcpy(data->state.ulbuf, ptr, sendsize);
     ptr = data->state.ulbuf;
   }
